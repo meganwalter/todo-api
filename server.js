@@ -25,15 +25,25 @@ app.get('/todos', function (req, res) {
 });
 // GET /todos/:id
 app.get('/todos/:id', function (req, res) {
-  var todoId = req.params.id;
-  var paramExists = false;
+  var todoId = parseInt(req.params.id, 10);
+  var matchedTodo;
   //iterate over todos array to find the match
-  for (var i = 0; i < todos.length; i++) {
-    if (todos[i].id === todoId) {
-      res.json(todos[i]);
-      return;
+  todos.forEach(function (todo) {
+    if(todoId === todo.id) {
+      matchedTodo = todo;
     }
+  });
+  if (matchedTodo) {
+    res.json(matchedTodo);
+  } else {
+    res.status(404).send();
   }
+  // for (var i = 0; i < todos.length; i++) {
+  //   if (todos[i].id === todoId) {
+  //     res.json(todos[i]);
+  //     return;
+  //   }
+  // }
 });
 
 app.listen(PORT, function () {
