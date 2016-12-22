@@ -13,7 +13,8 @@ app.get('/', function(req, res) {
   res.send('Todo API Root');
 });
 
-// GET /todos
+// GET /todos?completed=false&q=work
+
 app.get('/todos', function (req, res) {
   var queryParams = req.query;
   var filteredTodos = todos;
@@ -23,6 +24,15 @@ app.get('/todos', function (req, res) {
   } else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
     filteredTodos = _.where (filteredTodos, {completed: false});
   }
+
+  if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0){
+    filteredTodos = _.filter(filteredTodos, function (todo) {
+      return todo.description.indexOf(queryParams.q) > -1;
+    });
+  }
+  //q exists and is greater than 0
+  //filer method on underscore, use index of to search string for queryParams
+
   res.json(filteredTodos);
 });
 // GET /todos/:id
