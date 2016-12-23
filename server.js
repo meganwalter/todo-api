@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
-
+var db = require('./db.js');
 var app = express();
 var PORT = process.env.PORT || 3000;
 var todos = [];
@@ -50,17 +50,22 @@ app.get('/todos/:id', function (req, res) {
 //POST /todos
 app.post('/todos', function (req, res) {
   var body = _.pick(req.body, 'description', 'completed'); //use pick to only get description and completed
-
-  if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-    return res.status(400).send();
-  }
-
-  // set body.description use trim to remove spaces at begin or end
-  body.description = body.description.trim();
-  body.id = todoNextId;
-  todos.push(body);
-  todoNextId++;
-  res.json(body);
+//call create on db.todo, first callback if successful, respond to API wiht 200 & value.toJSON, if fails return res.status(400).json(e)
+  db.todo.create(body).then(function (todo) {
+    res.json(todo);
+  }).catch(function (e) {
+    res.send(400).json(e);
+  });
+  // if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
+  //   return res.status(400).send();
+  // }
+  //
+  // // set body.description use trim to remove spaces at begin or end
+  // body.description = body.description.trim();
+  // body.id = todoNextId;
+  // todos.push(body);
+  // todoNextId++;
+  // res.json(body);
 });
 
 // Delete todos/:id
@@ -105,6 +110,8 @@ app.put('/todos/:id', function (req, res) {
   res.json(matchedTodo);
 });
 
-app.listen(PORT, function () {
-  console.log('Express listening on port ' + PORT + '!');
+db.sequelize.sync().then(function () {
+  app.listen(PORT, function () {
+    console.log('Express listening on port ' + PORT + '!');
+  });
 });

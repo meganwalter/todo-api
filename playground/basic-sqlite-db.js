@@ -49,7 +49,7 @@ sequelize.sync().then(function () {
   // }).catch(function(e){
   //   console.log(e);
   // });
-  Todo.findById(4).then(function (todo) {
+  Todo.findById(1).then(function (todo) {
     if (todo) {
       console.log(todo.toJSON());
     } else {
