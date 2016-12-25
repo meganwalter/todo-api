@@ -38,15 +38,16 @@ app.get('/todos', function (req, res) {
 // GET /todos/:id
 app.get('/todos/:id', function (req, res) {
   var todoId = parseInt(req.params.id, 10);
-  var matchedTodo = _.findWhere(todos, {id: todoId});
-
-  if (matchedTodo) {
-    res.json(matchedTodo);
-  } else {
-    res.status(404).send();
-  }
+  db.todo.findById(todoId).then(function (todo) {
+    if(!!todo){
+      res.json(todo);
+    } else {
+      res.status(404).send();
+    }
+  }, function (e) {
+    res.status(500).send();
+  });
 });
-
 //POST /todos
 app.post('/todos', function (req, res) {
   var body = _.pick(req.body, 'description', 'completed'); //use pick to only get description and completed
