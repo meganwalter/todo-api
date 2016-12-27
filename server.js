@@ -16,24 +16,49 @@ app.get('/', function(req, res) {
 // GET /todos?completed=false&q=work
 
 app.get('/todos', function (req, res) {
-  var queryParams = req.query;
-  var filteredTodos = todos;
+  var query = req.query;
+  var where = {};
 
-  if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
-    filteredTodos = _.where (filteredTodos, {completed: true});
-  } else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
-    filteredTodos = _.where (filteredTodos, {completed: false});
+  if(query.hasOwnProperty('completed')) {
+    if (query.hasOwnProperty('completed') && query.completed === 'true') {
+      where.completed = true;
+    } else if (query.hasOwnProperty('completed') && query.completed === 'false') {
+      where.completed = false;
+    }
+  }
+  if (query.hasOwnProperty('q') && query.q.length > 0) {
+    where.description = {
+      $like: '%' + query.q + '%'
+    };
   }
 
-  if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0){
-    filteredTodos = _.filter(filteredTodos, function (todo) {
-      return todo.description.indexOf(queryParams.q) > -1;
-    });
-  }
-  //q exists and is greater than 0
-  //filer method on underscore, use index of to search string for queryParams
+  db.todo.findAll({where: where}).then(function (todos) {
+    if(todos.length > 0) {
+      res.json(todos);
+    } else {
+      res.status(404).send();
+    }
+  }, function (e) {
+    res.status(500).send();
+  });
 
-  res.json(filteredTodos);
+//   var filteredTodos = todos;
+// //use find all with where object, with $like and boolean true false
+//   if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
+//     filteredTodos = _.where (filteredTodos, {completed: true});
+//   } else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
+//     filteredTodos = _.where (filteredTodos, {completed: false});
+//   }
+//
+//   if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0){
+//     filteredTodos = _.filter(filteredTodos, function (todo) {
+//       return todo.description.indexOf(queryParams.q) > -1;
+//     });
+//   }
+//   //q exists and is greater than 0
+//   //filer method on underscore, use index of to search string for queryParams
+//
+//   res.json(filteredTodos);
 });
 // GET /todos/:id
 app.get('/todos/:id', function (req, res) {
