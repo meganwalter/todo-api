@@ -5,7 +5,6 @@ var db = require('./db.js');
 var app = express();
 var PORT = process.env.PORT || 3000;
 var todos = [];
-var todoNextId = 1;
 
 app.use(bodyParser.json());
 
@@ -42,23 +41,6 @@ app.get('/todos', function (req, res) {
     res.status(500).send();
   });
 
-//   var filteredTodos = todos;
-// //use find all with where object, with $like and boolean true false
-//   if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
-//     filteredTodos = _.where (filteredTodos, {completed: true});
-//   } else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
-//     filteredTodos = _.where (filteredTodos, {completed: false});
-//   }
-//
-//   if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0){
-//     filteredTodos = _.filter(filteredTodos, function (todo) {
-//       return todo.description.indexOf(queryParams.q) > -1;
-//     });
-//   }
-//   //q exists and is greater than 0
-//   //filer method on underscore, use index of to search string for queryParams
-//
-//   res.json(filteredTodos);
 });
 // GET /todos/:id
 app.get('/todos/:id', function (req, res) {
@@ -82,16 +64,6 @@ app.post('/todos', function (req, res) {
   }).catch(function (e) {
     res.send(400).json(e);
   });
-  // if (!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0) {
-  //   return res.status(400).send();
-  // }
-  //
-  // // set body.description use trim to remove spaces at begin or end
-  // body.description = body.description.trim();
-  // body.id = todoNextId;
-  // todos.push(body);
-  // todoNextId++;
-  // res.json(body);
 });
 
 // Delete todos/:id
