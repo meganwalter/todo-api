@@ -127,7 +127,7 @@ app.post('/users', function (req, res) {
   var body = _.pick(req.body, 'email', 'password'); //use pick to only get description and completed
 //call create on db.todo, first callback if successful, respond to API wiht 200 & value.toJSON, if fails return res.status(400).json(e)
   db.user.create(body).then(function (user) {
-    res.json(user);
+    res.json(user.toPublicJSON());
   },function (e) {
     res.status(400).json(e);
   });
