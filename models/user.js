@@ -16,5 +16,13 @@ module.exports = function (sequelize, DataTypes) {
         //validate regex in sequelize
       }
     }
+  }, {
+    hooks: {
+      beforeValidate: function (user, options) {
+        if (typeof user.email === 'string') {
+          user.email = user.email.toLowerCase();
+        }
+      }
+    }
   });
 };
