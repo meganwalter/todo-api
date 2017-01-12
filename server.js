@@ -63,7 +63,12 @@ app.post('/todos', middleware.requireAuthentication, function (req, res) {
   var body = _.pick(req.body, 'description', 'completed'); //use pick to only get description and completed
 //call create on db.todo, first callback if successful, respond to API wiht 200 & value.toJSON, if fails return res.status(400).json(e)
   db.todo.create(body).then(function (todo) {
-    res.json(todo);
+    // res.json(todo);
+    req.user.addTodo(todo).then(function () {
+      return todo.reload();
+    }).then(function (todo) {
+      res.json(todo);
+    })
   }).catch(function (e) {
     res.send(400).json(e);
   });
