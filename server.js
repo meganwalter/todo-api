@@ -89,8 +89,8 @@ app.delete('/todos/:id', middleware.requireAuthentication, function (req, res) {
 //check if the userid = req.user.id
   db.todo.destroy({
     where: {
-      userid: req.user.get('id'),
-      id: todoId
+      id: todoId,
+      userid: req.user.get('id')
     }
   }).then(function (rowsDeleted) {
     if (rowsDeleted === 0) {
@@ -129,8 +129,8 @@ app.put('/todos/:id', middleware.requireAuthentication, function (req, res) {
   }
   db.todo.findOne({
     where: {
-      userid: req.user.get('id'),
-      id: todoId
+      id: todoId,
+      userid: req.user.get('id')
     }
   }).then(function (todo) {
     if(todo){
