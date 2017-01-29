@@ -50,10 +50,10 @@ app.get('/todos', middleware.requireAuthentication, function (req, res) {
 // GET /todos/:id
 app.get('/todos/:id',middleware.requireAuthentication, function (req, res) {
   var todoId = parseInt(req.params.id, 10);
-  //switch to find one where the id is the id and the userid matches userid on req.user
+  //switch to find one where the id is the id and the userId matches userId on req.user
   db.todo.findOne({
     where: {
-      userid: req.user.get('id'),
+      userId: req.user.get('id'),
       id: todoId
     }
   }).then(function (todo) {
@@ -86,11 +86,11 @@ app.post('/todos', middleware.requireAuthentication, function (req, res) {
 
 app.delete('/todos/:id', middleware.requireAuthentication, function (req, res) {
   var todoId = parseInt(req.params.id, 10);
-//check if the userid = req.user.id
+//check if the userId = req.user.id
   db.todo.destroy({
     where: {
       id: todoId,
-      userid: req.user.get('id')
+      userId: req.user.get('id')
     }
   }).then(function (rowsDeleted) {
     if (rowsDeleted === 0) {
@@ -115,7 +115,7 @@ app.delete('/todos/:id', middleware.requireAuthentication, function (req, res) {
 //Put /todos/:id
 app.put('/todos/:id', middleware.requireAuthentication, function (req, res) {
   //validate, find by id
-  //exact same for getting individual todos, fine one with where clause, only where id=id and userid = req.userid
+  //exact same for getting individual todos, fine one with where clause, only where id=id and userId = req.userId
   var todoId = parseInt(req.params.id, 10);
   var body = _.pick(req.body, 'description', 'completed');
   var attributes = {};
@@ -130,7 +130,7 @@ app.put('/todos/:id', middleware.requireAuthentication, function (req, res) {
   db.todo.findOne({
     where: {
       id: todoId,
-      userid: req.user.get('id')
+      userId: req.user.get('id')
     }
   }).then(function (todo) {
     if(todo){
